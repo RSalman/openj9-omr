@@ -449,15 +449,6 @@ MM_ParallelDispatcher::recomputeActiveThreadCountForTask(MM_EnvironmentBase *env
 	 */
 	uintptr_t taskActiveThreadCount = OMR_MIN(_activeThreadCount, threadCount);
 
-	_extensions->syntheticCount--;
-
-	if (_extensions->syntheticCount == 0) {
-		_extensions->syntheticCount = env->getExtensions()->gcThreadCount;
-	}
-
-
-
-	taskActiveThreadCount = _activeThreadCount = _extensions->syntheticCount;
 
 	task->setThreadCount(taskActiveThreadCount);
  	return taskActiveThreadCount;
