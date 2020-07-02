@@ -439,6 +439,7 @@ public:
 	uintptr_t gcThreadCount; /**< Initial number of GC threads - chosen default or specified in java options*/
 	bool gcThreadCountForced; /**< true if number of GC threads is specified in java options. Currently we have a few ways to do this:
 										-Xgcthreads		-Xthreads= (RT only)	-XthreadCount= */
+	uintptr_t dispatcherHybridNotifyThreadBound ;  /** Bound for determining hybrid notification type (notify_all for count >= bound, individual notifies for count < bound) */
 
 #if defined(OMR_GC_MODRON_SCAVENGER) || defined(OMR_GC_VLHGC)
 	enum ScavengerScanOrdering {
@@ -498,6 +499,8 @@ public:
 	double dnssMinimumContraction;
 	bool enableSplitHeap; /**< true if we are using gencon with -Xgc:splitheap (we will fail to boostrap if we can't allocate both ranges) */
 	double aliasInhibitingThresholdPercentage; /**< percentage of threads that can be blocked before copy cache aliasing is inhibited (set through aliasInhibitingThresholdPercentage=) */
+
+	uintptr_t syntheticCount;
 
 	enum HeapInitializationSplitHeapSection {
 		HEAP_INITIALIZATION_SPLIT_HEAP_UNKNOWN = 0,
@@ -1510,6 +1513,7 @@ public:
 #endif /* OMR_GC_BATCH_CLEAR_TLH */
 		, gcThreadCount(0)
 		, gcThreadCountForced(false)
+		, dispatcherHybridNotifyThreadBound(16)
 #if defined(OMR_GC_MODRON_SCAVENGER) || defined(OMR_GC_VLHGC)
 		, scavengerScanOrdering(OMR_GC_SCAVENGER_SCANORDERING_HIERARCHICAL)
 #endif /* OMR_GC_MODRON_SCAVENGER || OMR_GC_VLHGC */
@@ -1565,6 +1569,7 @@ public:
 		, dnssMinimumContraction(0.0)
 		, enableSplitHeap(false)
 		, aliasInhibitingThresholdPercentage(0.20)
+		, syntheticCount(1)
 		, splitHeapSection(HEAP_INITIALIZATION_SPLIT_HEAP_UNKNOWN)
 #endif /* OMR_GC_MODRON_SCAVENGER */
 		, globalMaximumContraction(0.05) /* by default, contract must be at most 5% of the committed heap */
