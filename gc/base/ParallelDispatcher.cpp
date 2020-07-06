@@ -394,20 +394,9 @@ MM_ParallelDispatcher::shutDownThreads()
 void
 MM_ParallelDispatcher::wakeUpThreads(uintptr_t count)
 {
-	/* This thread should notify and release _slaveThreadMutex asap. Threads waking up will need to
-	 * reacquire the mutex before proceeding with the task.
-	 *
-	 * Hybrid approach to notifying threads:
-	 * 	- Cheaper to do to individual notifies for small set of threads from a large pool
-	 * 	- More expensive to do with individual notifies with large set of threads
-	 */
-	if (count < _extensions->dispatcherHybridNotifyThreadBound) {
 		for (uintptr_t threads = 0; threads < count; threads++) {
 			omrthread_monitor_notify(_slaveThreadMutex);
 		}
-	} else {
-		omrthread_monitor_notify_all(_slaveThreadMutex);
-	}
 }
 
 /**
