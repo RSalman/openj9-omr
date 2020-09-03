@@ -171,7 +171,9 @@ MM_ParallelDispatcher::workerEntryPoint(MM_EnvironmentBase *env)
 		/* Thread should never exit waiting loop without being reserved with _workerThreadsReservedForGC set.
 		 * (i.e we should never have non-waiting status upon wake up with _slaveThreadsReservedForGC) */
 		if (_workerThreadsReservedForGC) {
-			Assert_MM_true(worker_status_reserved == _statusTable[workerID]);
+			Assert_MM_true((worker_status_reserved == _statusTable[workerID]) || (!_threadsToReserve && worker_status_dying == _statusTable[workerID]));
+		} else {
+			Assert_MM_true(_inShutdown && worker_status_dying == _statusTable[workerID]);
 		}
 
 		if(worker_status_reserved == _statusTable[workerID]) {
