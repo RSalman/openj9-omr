@@ -174,7 +174,7 @@ MM_ParallelDispatcher::workerEntryPoint(MM_EnvironmentBase *env)
 			 * In this case, _workerThreadsReservedForGC is set but the task is run single threaded and exiting threads must be dying instead of reserved. */
 			Assert_MM_true((worker_status_reserved == _statusTable[workerID]) || (!_threadsToReserve && worker_status_dying == _statusTable[workerID]));
 		} else {
-			/* If there is no task dispatched and we've exited, then we must be in shutdown */
+			/* If there is no task dispatched and thread exited, then we must be in shutdown */
 			Assert_MM_true(_inShutdown && worker_status_dying == _statusTable[workerID]);
 		}
 
